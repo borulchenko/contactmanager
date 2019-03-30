@@ -1,7 +1,5 @@
 import React, { Component } from "react";
-import { Consumer } from "../../context";
 import TextInputGroup from "../layout/TextInputGroup";
-import axios from "axios";
 
 class AddContact extends Component {
   state = {
@@ -10,8 +8,7 @@ class AddContact extends Component {
     errors: { name: "", phone: "" }
   };
 
-  onChange = e => this.setState({ [e.target.name]: e.target.value });
-  onSubmit = async (dispatch, e) => {
+  onSubmit = e => {
     e.preventDefault();
 
     const { name, phone } = this.state;
@@ -30,12 +27,7 @@ class AddContact extends Component {
       phone
     };
 
-    const res = await axios.post(
-      "https://jsonplaceholder.typicode.com/users",
-      newContact
-    );
-
-    dispatch({ type: "ADD_CONTACT", payload: res.data });
+    //// SUBMIT CONTACT ////
 
     this.setState({
       name: "",
@@ -46,48 +38,42 @@ class AddContact extends Component {
     this.props.history.push("/");
   };
 
+  onChange = e => this.setState({ [e.target.name]: e.target.value });
+
   render() {
     const { name, phone, errors } = this.state;
 
     return (
-      <Consumer>
-        {value => {
-          const { dispatch } = value;
+      <div className="card mb-3">
+        <div className="card-header">Add Contact</div>
+        <div className="card-body">
+          <form onSubmit={this.onSubmit}>
+            <TextInputGroup
+              label="Name"
+              name="name"
+              placeholder="Enter name"
+              value={name}
+              onChange={this.onChange}
+              error={errors.name}
+            />
 
-          return (
-            <div className="card mb-3">
-              <div className="card-header">Add Contact</div>
-              <div className="card-body">
-                <form onSubmit={this.onSubmit.bind(this, dispatch)}>
-                  <TextInputGroup
-                    label="Name"
-                    name="name"
-                    placeholder="Enter name"
-                    value={name}
-                    onChange={this.onChange}
-                    error={errors.name}
-                  />
+            <TextInputGroup
+              label="Phone"
+              name="phone"
+              placeholder="Enter phone"
+              value={phone}
+              onChange={this.onChange}
+              error={errors.phone}
+            />
 
-                  <TextInputGroup
-                    label="Phone"
-                    name="phone"
-                    placeholder="Enter phone"
-                    value={phone}
-                    onChange={this.onChange}
-                    error={errors.phone}
-                  />
-
-                  <input
-                    type="submit"
-                    value="Add Conctact"
-                    className="btn btn-light btn-block"
-                  />
-                </form>
-              </div>
-            </div>
-          );
-        }}
-      </Consumer>
+            <input
+              type="submit"
+              value="Add Conctact"
+              className="btn btn-light btn-block"
+            />
+          </form>
+        </div>
+      </div>
     );
   }
 }
