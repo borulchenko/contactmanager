@@ -2,6 +2,7 @@ import {
   GET_CONTACTS,
   GET_CONTACT,
   ADD_CONTACT,
+  UPDATE_CONTACT,
   DELETE_CONTACT
 } from "../actions/types";
 
@@ -26,6 +27,15 @@ export default function(state = initialState, action) {
       return {
         ...state,
         contacts: [action.payload, ...state.contacts]
+      };
+    case UPDATE_CONTACT:
+      return {
+        ...state,
+        contacts: state.contacts.map(contact =>
+          contact.id === action.payload.id
+            ? (contact = action.payload)
+            : contact
+        )
       };
     case DELETE_CONTACT:
       return {
